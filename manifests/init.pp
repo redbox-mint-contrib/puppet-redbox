@@ -47,8 +47,8 @@ class puppet-redbox (
   $packages                 = hiera_hash(packages, {
     redbox             => {
       system             => 'redbox',
-      package            => 'redbox-distro',
-      server_url_context => 'redbox',
+      package            => 'redbox-rdsi-arms-qcif',
+      server_url_context => '',
     }
     ,
     mint               => {
@@ -122,12 +122,12 @@ class puppet-redbox (
     logoutput => false,
   }
 
-  puppet-redbox::add_systemuser { $redbox_user: } ->
-  add_directory { $directories:
+  puppet_common::add_systemuser { $redbox_user: } ->
+  puppet_common::add_directory { $directories:
     owner            => $redbox_user,
     parent_directory => $install_parent_directory,
   } ->
-  class { 'puppet-redbox::java': }
+  class { 'puppet_common::java': }
 
   if ($proxy) {
     class { 'puppet-redbox::add_proxy_server':
