@@ -14,15 +14,20 @@ define puppet-redbox::add_redbox_package (
   $redbox_package = $packages[package]
   $redbox_system = $packages[system]
 
+  Package {
+    allow_virtual => false, }
+
   package { $redbox_package: }
 
-  puppet-redbox::update_system_config { "${install_parent_directory}/${redbox_system}/home/system-config.json":
+  puppet-redbox::update_system_config { "${install_parent_directory}/${redbox_system}/home/system-config.json"
+  :
     system_config => $system_config,
     notify        => Exec["$redbox_system-restart_on_refresh"],
     subscribe     => Package[$redbox_package],
   }
 
-  puppet-redbox::update_server_env { "${install_parent_directory}/${redbox_system}/server/tf_env.sh":
+  puppet-redbox::update_server_env { "${install_parent_directory}/${redbox_system}/server/tf_env.sh"
+  :
     tf_env     => $tf_env,
     has_ssl    => $has_ssl,
     server_url => $server_url,
@@ -48,7 +53,11 @@ define puppet-redbox::add_redbox_package (
     logoutput   => true,
   }
 
-  puppet-redbox::prime_system { $server_url: subscribe => [Exec["$redbox_system-restart_on_refresh"], Service[$redbox_system]], }
+  puppet-redbox::prime_system { $server_url:
+    subscribe => [
+      Exec["$redbox_system-restart_on_refresh"],
+      Service[$redbox_system]],
+  }
 
   puppet-redbox::add_tidy { $redbox_system: require => Service[$redbox_system], }
 }
