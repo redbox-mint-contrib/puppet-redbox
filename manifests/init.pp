@@ -126,14 +126,12 @@ class puppet-redbox (
       require    => Class['Puppet-redbox::Java'],
       before     => [
         Puppet-redbox::Add_redbox_package[values($packages)],
-        Class['Puppet-redbox::deploy_script']],
       server_url => $server_url,
       has_ssl    => $has_ssl,
       ssl_config => $ssl_config,
       proxy      => $proxy,
     } ~> Service['httpd']
 
-    Class['Puppet-redbox::Deploy_script'] ~> Service['httpd']
     Puppet-redbox::Add_redbox_package[values($packages)] ~> Service['httpd']
 
   }
