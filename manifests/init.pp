@@ -37,13 +37,8 @@
 #
 class puppet-redbox (
   $redbox_user              = hiera(redbox_user, 'redbox'),
-  $directories              = hiera_array(directories, [
-    'redbox',
-    'mint',
-    'deploy',
-    'deploy/mint']),
+  $directories              = hiera_array(directories, ['redbox', 'mint']),
   $install_parent_directory = hiera(install_parent_directory, '/opt'),
-  $deploy_parent_directory  = hiera(deploy_parent_directory, '/opt/deploy'),
   $packages                 = hiera_hash(packages, {
     redbox             => {
       system             => 'redbox',
@@ -56,9 +51,6 @@ class puppet-redbox (
       package            => 'mint-distro',
       server_url_context => 'mint',
     }
-  }
-  ),
-  $archives                 = hiera_hash(archives, {
   }
   ),
   $proxy                    = hiera_array(proxy, [
@@ -125,14 +117,16 @@ class puppet-redbox (
   puppet_common::add_systemuser { $redbox_user: } ->
   puppet_common::add_directory { $directories:
     owner            => $redbox_user,
-    parent_directory => $install_parent_directory,
+    parent_directory => $install_parent_directory
   } ->
   class { 'puppet_common::java': }
 
   if ($proxy) {
     class { 'puppet-redbox::add_proxy_server':
       require    => Class['Puppet-redbox::Java'],
-      before     => [Puppet-redbox::Add_redbox_package[values($packages)], Class['Puppet-redbox::deploy_script']],
+      before     => [
+        Puppet-redbox::Add_redbox_package[values($packages)],
+        Class['Puppet-redbox::deploy_script']],
       server_url => $server_url,
       has_ssl    => $has_ssl,
       ssl_config => $ssl_config,
@@ -142,15 +136,6 @@ class puppet-redbox (
     Class['Puppet-redbox::Deploy_script'] ~> Service['httpd']
     Puppet-redbox::Add_redbox_package[values($packages)] ~> Service['httpd']
 
-  }
-
-  class { 'puppet-redbox::deploy_script':
-    archives                 => $archives,
-    has_ssl                  => $has_ssl,
-    server_url               => $server_url,
-    install_parent_directory => $install_parent_directory,
-    deploy_parent_directory  => $deploy_parent_directory,
-    owner                    => $redbox_user,
   }
 
   puppet-redbox::add_yum_repo { $yum_repos: } ->
