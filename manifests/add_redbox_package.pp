@@ -14,9 +14,6 @@ define puppet-redbox::add_redbox_package (
   $redbox_package = $packages[package]
   $redbox_system = $packages[system]
 
-  Package {
-    allow_virtual => false, }
-
   package { $redbox_package: }
 
   puppet-redbox::update_system_config { "${install_parent_directory}/${redbox_system}/home/system-config.json"

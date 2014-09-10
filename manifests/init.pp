@@ -114,6 +114,9 @@ class puppet-redbox (
     logoutput => false,
   }
 
+  Package {
+    allow_virtual => false, }
+
   puppet_common::add_systemuser { $redbox_user: } ->
   puppet_common::add_directory { $directories:
     owner            => $redbox_user,
