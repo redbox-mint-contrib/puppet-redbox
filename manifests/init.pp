@@ -84,7 +84,7 @@ class puppet-redbox (
     }
     ,
     chain => {
-      file  => "/etc/ssl/local_certs/SSLCertificateChainFile/${::fqdn}_CA.crt"
+      file  => "/etc/ssl/local_certs/SSLCertificateChainFile/${::fqdn}.chain"
     }
   }
   ),
