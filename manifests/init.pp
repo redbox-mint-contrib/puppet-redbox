@@ -107,8 +107,6 @@ class puppet-redbox (
     $server_url = $::ipaddress_lo
   }
 
-  host { [$::fqdn]: ip => $::ipaddress, }
-
   Exec {
     path      => $exec_path,
     logoutput => false,
