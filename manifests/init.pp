@@ -75,16 +75,16 @@ class puppet-redbox (
     '/sbin']),
   $ssl_config               = hiera_hash(ssl_config, {
     cert  => {
-      file  => "/etc/ssl/local_certs/SSLCertificateFile/%{::fqdn}.crt"
+      file  => "/etc/ssl/local_certs/SSLCertificateFile/${::fqdn}.crt"
     }
     ,
     key   => {
-      file => "/etc/ssl/local_certs/SSLCertificateKeyFile/%{::fqdn}.key",
+      file => "/etc/ssl/local_certs/SSLCertificateKeyFile/${::fqdn}.key",
       mode => 0444
     }
     ,
     chain => {
-      file  => "/etc/ssl/local_certs/SSLCertificateChainFile/%{::fqdn}_CA.crt"
+      file  => "/etc/ssl/local_certs/SSLCertificateChainFile/${::fqdn}_CA.crt"
     }
   }
   ),
