@@ -96,7 +96,7 @@ class puppet-redbox (
       enabled  => 1
     }
     ]),
-  $crontab                  = hiera_array(crontab, undef),
+  $crontab                  = hiera_hash(crontab, undef),
   $tf_env                   = hiera_hash(tf_env, undef),
   $system_config            = hiera_hash(system_config, undef)) {
   if ($has_dns and $::fqdn) {
@@ -147,6 +147,6 @@ class puppet-redbox (
   }
 
   if ($crontab) {
-    puppet-redbox::add_cron { $crontab: }
+    puppet_common::add_cron { $crontab: }
   }
 }
