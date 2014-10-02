@@ -66,7 +66,7 @@ class puppet-redbox (
     ]),
   $has_dns                  = hiera(has_dns, false),
   $has_ssl                  = hiera(has_ssl, false),
-  $exec_path                = hiera(exec_path, [
+  $exec_path                = hiera_array(exec_path, [
     '/usr/local/bin',
     '/opt/local/bin',
     '/usr/bin',
@@ -147,6 +147,6 @@ class puppet-redbox (
   }
 
   if ($crontab) {
-    puppet_common::add_cron { $crontab: }
+    puppet_common::add_cron { $crontab: cron_path => join($exec_path, ":"), }
   }
 }
