@@ -34,8 +34,7 @@ class puppet-redbox::add_proxy_server (
   include apache::mod::proxy
   include apache::mod::proxy_http
 
-  puppet_common::add_directory { 'make puppet conf dir': end_path => $conf_dir, }
-
+  puppet_common::add_directory { 'make puppet conf dir': end_path => $conf_dir, } ->
   file { 'redbox.conf':
     path    => "${conf_dir}/${priority}-redbox.conf",
     ensure  => file,
@@ -56,6 +55,7 @@ class puppet-redbox::add_proxy_server (
       proxy_pass => $proxy,
       servername => $server_url,
       priority   => $priority,
+      require    => Puppet_common::Add_directory['make puppet conf dir'],
     } ->
     file_line { 'preserve_proxy_host':
       path  => "$conf_dir/${priority}-${conf_file_name}.conf",
