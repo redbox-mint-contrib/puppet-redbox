@@ -16,12 +16,16 @@ define puppet-redbox::add_redbox_package (
 
   package { $redbox_package: }
 
-  puppet-redbox::update_system_config { [
-    "${install_parent_directory}/${redbox_system}/home/config-include/2-misc-modules/rapidaaf.json",
-    "${install_parent_directory}/${redbox_system}/home/config-include/plugins/rapidaaf.json"]:
-    system_config => $system_config,
-    notify        => Exec["$redbox_system-restart_on_refresh"],
-    subscribe     => Package[$redbox_package],
+  # # TODO : temp-workaround as unable to check path consistently between standalone and
+  # master-agent
+  if ($redbox_system == 'redbox') {
+    puppet-redbox::update_system_config { [
+      "${install_parent_directory}/${redbox_system}/home/config-include/2-misc-modules/rapidaaf.json",
+      "${install_parent_directory}/${redbox_system}/home/config-include/plugins/rapidaaf.json"]:
+      system_config => $system_config,
+      notify        => Exec["$redbox_system-restart_on_refresh"],
+      subscribe     => Package[$redbox_package],
+    }
   }
 
   puppet-redbox::update_server_env { "${install_parent_directory}/${redbox_system}/server/tf_env.sh"

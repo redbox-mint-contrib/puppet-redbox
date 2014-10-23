@@ -2,11 +2,6 @@ define puppet-redbox::update_system_config (
   $system_config_path = $title,
   $system_config      = undef,
   $root_path          = get_module_path('puppet-redbox')) {
-  exec { "if_exists ${system_config_path}":
-    command => '/bin/true',
-    onlyif  => "/usr/bin/test -e ${system_config_path}",
-  }
-
   if ($system_config) {
     $load_path = "${root_path}/lib/augeas/lenses"
 
@@ -24,7 +19,7 @@ define puppet-redbox::update_system_config (
               rapidAafSso][url]}\"",
           "set dict/entry[. = 'rapidAafSso']/dict/entry[. = 'sharedKey']/string \"${system_config[
               rapidAafSso][sharedKey]}\""],
-        require   => [Package['augeas'], Exec["if_exists ${system_config_path}"]],
+        require   => Package['augeas'],
       }
     }
   }
