@@ -64,6 +64,7 @@ class puppet-redbox::add_proxy_server (
       path  => "$conf_dir/${priority}-${conf_file_name}.conf",
       line  => "SSLProxyEngine On",
       match => "^.*SSLProxyEngine[[:space:]]+..[[:space:]]*$",
-    }
+    } ->
+    puppet_common::patch_ssl { 'patch proxy ssl for redbox': }
   }
 }
