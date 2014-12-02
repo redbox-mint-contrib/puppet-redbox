@@ -1,11 +1,10 @@
 define puppet-redbox::add_redbox_package (
-  $packages                 = $title,
-  $owner                    = undef,
-  $install_parent_directory = undef,
-  $has_ssl                  = undef,
-  $tf_env                   = undef,
-  $system_config            = undef,
-  $base_server_url          = undef,) {
+  $packages        = $title,
+  $owner           = undef,
+  $has_ssl         = undef,
+  $tf_env          = undef,
+  $system_config   = undef,
+  $base_server_url = undef,) {
   if ($packages[server_url_context]) {
     $server_url = "${base_server_url}/${packages[server_url_context]}"
   } else {
@@ -14,22 +13,22 @@ define puppet-redbox::add_redbox_package (
   $redbox_package = $packages[package]
   $redbox_system = $packages[system]
 
+  puppet_common::add_directory { $packages[install_directory]: owner => $owner, } ->
   package { $redbox_package: }
 
   # # TODO : temp-workaround as unable to check path consistently between standalone and
   # master-agent
   if ($redbox_system == 'redbox') {
     puppet-redbox::update_system_config { [
-      "${install_parent_directory}/${redbox_system}/home/config-include/2-misc-modules/rapidaaf.json",
-      "${install_parent_directory}/${redbox_system}/home/config-include/plugins/rapidaaf.json"]:
+      "${packages[install_directory]}/home/config-include/2-misc-modules/rapidaaf.json",
+      "${packages[install_directory]}/home/config-include/plugins/rapidaaf.json"]:
       system_config => $system_config,
       notify        => Exec["$redbox_system-restart_on_refresh"],
       subscribe     => Package[$redbox_package],
     }
   }
 
-  puppet-redbox::update_server_env { "${install_parent_directory}/${redbox_system}/server/tf_env.sh"
-  :
+  puppet-redbox::update_server_env { "${packages[install_directory]}/server/tf_env.sh":
     tf_env     => $tf_env,
     has_ssl    => $has_ssl,
     server_url => $server_url,

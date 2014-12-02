@@ -37,19 +37,19 @@
 #
 class puppet-redbox (
   $redbox_user              = hiera(redbox_user, 'redbox'),
-  $directories              = hiera_array(directories, ['redbox', 'mint']),
   $install_parent_directory = hiera(install_parent_directory, '/opt'),
   $packages                 = hiera_hash(packages, {
     redbox             => {
-      system             => 'redbox',
-      package            => 'redbox-rdsi-arms-qcif',
-      server_url_context => '',
+      system            => 'redbox',
+      package           => 'redbox-rdsi-arms-qcif',
+      install_directory => '/opt/redbox',
     }
     ,
     mint               => {
       system             => 'mint',
       package            => 'mint-distro',
       server_url_context => 'mint',
+      install_directory  => '/opt/mint',
     }
   }
   ),
@@ -115,12 +115,18 @@ class puppet-redbox (
   Package {
     allow_virtual => false, }
 
-  puppet_common::add_systemuser { $redbox_user: } ->
-  puppet_common::add_directory { $directories:
-    owner            => $redbox_user,
-    parent_directory => $install_parent_directory
-  } ->
-  class { 'puppet_common::java': }
+  puppet_common::add_systemuser { $redbox_user: }
+
+  ensure_resource(file, $install_parent_directory, {
+    ensure => directory,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
+  }
+  )
+
+  class { 'puppet_common::java':
+  }
 
   if ($proxy) {
     class { 'puppet-redbox::add_proxy_server':
@@ -138,12 +144,12 @@ class puppet-redbox (
 
   puppet_common::add_yum_repo { $yum_repos: exec_path => $exec_path } ->
   puppet-redbox::add_redbox_package { [values($packages)]:
-    owner                    => $redbox_user,
-    install_parent_directory => $install_parent_directory,
-    has_ssl                  => $has_ssl,
-    tf_env                   => $tf_env,
-    system_config            => $system_config,
-    base_server_url          => $server_url,
+    owner           => $redbox_user,
+    has_ssl         => $has_ssl,
+    tf_env          => $tf_env,
+    system_config   => $system_config,
+    base_server_url => $server_url,
+    require         => [Puppet_common::Add_systemuser[$redbox_user], Class['Puppet_common::Java']]
   }
 
   if ($crontab) {
