@@ -155,4 +155,10 @@ class puppet-redbox (
   if ($crontab) {
     puppet_common::add_cron { $crontab: cron_path => join($exec_path, ":"), }
   }
+
+  tidy { '/var/lib/puppet/reports':
+    age     => '1w',
+    recurse => true,
+    matches => ["*.yaml"],
+  }
 }
