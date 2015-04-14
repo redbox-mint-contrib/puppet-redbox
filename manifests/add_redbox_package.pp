@@ -25,7 +25,18 @@ define puppet-redbox::add_redbox_package (
       system_config => $system_config,
       notify        => Exec["$redbox_system-restart_on_refresh"],
       subscribe     => Package[$redbox_package],
+    } ->
+    file_line { 'update system-config.json api key':
+      path  => "${packages[install_directory]}/home/config-include/2-misc-modules/apiSecurity.json",
+      line  => "\"apiKey\": \"${system_config[api][clients][apiKey]}\",",
+      match => "^\"apiKey\":.*$"
+    } ->
+    file_line { 'update system-config.json api user':
+      path  => "${packages[install_directory]}/home/config-include/2-misc-modules/apiSecurity.json",
+      line  => "\"apiKey\": \"${system_config[api][clients][username]}\",",
+      match => "^\"username\":.*$"
     }
+
   }
 
   puppet-redbox::update_server_env { "${packages[install_directory]}/server/tf_env.sh":
