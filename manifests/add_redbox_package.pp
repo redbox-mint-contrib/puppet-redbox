@@ -33,7 +33,7 @@ define puppet-redbox::add_redbox_package (
     } ->
     file_line { 'update system-config.json api user':
       path  => "${packages[install_directory]}/home/config-include/2-misc-modules/apiSecurity.json",
-      line  => "\"apiKey\": \"${system_config[api][clients][username]}\",",
+      line  => "\"username\": \"${system_config[api][clients][username]}\",",
       match => "^\"username\":.*$"
     }
 
