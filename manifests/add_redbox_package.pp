@@ -29,12 +29,12 @@ define puppet-redbox::add_redbox_package (
     file_line { 'update system-config.json api key':
       path  => "${packages[install_directory]}/home/config-include/2-misc-modules/apiSecurity.json",
       line  => "\"apiKey\": \"${system_config[api][clients][apiKey]}\",",
-      match => "^\"apiKey\":.*$"
+      match => "\"apiKey\":.*$"
     } ->
     file_line { 'update system-config.json api user':
       path  => "${packages[install_directory]}/home/config-include/2-misc-modules/apiSecurity.json",
-      line  => "\"username\": \"${system_config[api][clients][username]}\",",
-      match => "^\"username\":.*$"
+      line  => "\"username\": \"${system_config[api][clients][username]}\"",
+      match => "\"username\":.*$"
     }
 
   }
@@ -65,10 +65,15 @@ define puppet-redbox::add_redbox_package (
     logoutput   => true,
   }
 
-  puppet-redbox::prime_system { $server_url:
-    subscribe => [
-      Exec["$redbox_system-restart_on_refresh"],
-      Service[$redbox_system]],
+  #  mint is not always proxied
+  if ($redbox_system == 'mint') {
+    puppet-redbox::prime_system { "localhost:9001/mint": subscribe => [
+        Exec["$redbox_system-restart_on_refresh"],
+        Service[$redbox_system]], }
+  } else {
+    puppet-redbox::prime_system { $server_url: subscribe => [
+        Exec["$redbox_system-restart_on_refresh"],
+        Service[$redbox_system]], }
   }
 
   puppet-redbox::add_tidy { $redbox_system: require => Service[$redbox_system], }
