@@ -91,7 +91,7 @@ class puppet-redbox (
   $yum_repos                = hiera_array(yum_repos, [{
       name     => 'redbox',
       descr    => 'Redbox_repo',
-      baseurl  => 'http://dev.redboxresearchdata.com.au/yum/snapshots',
+      baseurl  => 'http://dev.redboxresearchdata.com.au/yum/releases',
       gpgcheck => 0,
       enabled  => 1
     }

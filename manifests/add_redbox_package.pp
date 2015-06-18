@@ -13,11 +13,9 @@ define puppet-redbox::add_redbox_package (
   $redbox_package = $packages[package]
   $redbox_system = $packages[system]
 
-  puppet_common::add_directory { $packages[install_directory]: owner => $owner, } ->
+  puppet_common::add_directory { $packages[install_directory]: owner => $owner, before => Package[$redbox_package] }
   package { $redbox_package: }
 
-  # # TODO : temp-workaround as unable to check path consistently between standalone and
-  # master-agent
   if ($redbox_system == 'redbox') {
     puppet-redbox::update_system_config { [
       "${packages[install_directory]}/home/config-include/2-misc-modules/rapidaaf.json",
@@ -25,17 +23,21 @@ define puppet-redbox::add_redbox_package (
       system_config => $system_config,
       notify        => Exec["$redbox_system-restart_on_refresh"],
       subscribe     => Package[$redbox_package],
-    } ->
+    }
+    if ($system_config[api]) {
     file_line { 'update system-config.json api key':
       path  => "${packages[install_directory]}/home/config-include/2-misc-modules/apiSecurity.json",
       line  => "\"apiKey\": \"${system_config[api][clients][apiKey]}\",",
-      match => "\"apiKey\":.*$"
+      match => "\"apiKey\":.*$",
+      subscribe     => Package[$redbox_package],
     } ->
     file_line { 'update system-config.json api user':
       path  => "${packages[install_directory]}/home/config-include/2-misc-modules/apiSecurity.json",
       line  => "\"username\": \"${system_config[api][clients][username]}\"",
-      match => "\"username\":.*$"
+      match => "\"username\":.*$",
+      subscribe     => Package[$redbox_package],
     }
+	}
 
   }
 
