@@ -1,39 +1,28 @@
 # == Class: puppet-redbox
 #
-# Full description of class puppet-redbox here.
-#
-# === Parameters
-#
-# Document parameters here.
-#
-# [*sample_parameter*]
-#   Explanation of what this parameter affects and what it defaults to.
-#   e.g. "Specify one or more upstream ntp servers as an array."
-#
-# === Variables
-#
-# Here you should define a list of variables that this module would require.
-#
-# [*sample_variable*]
-#   Explanation of how this variable affects the funtion of this class and if
-#   it has a default. e.g. "The parameter enc_ntp_servers must be set by the
-#   External Node Classifier as a comma separated list of hostnames." (Note,
-#   global variables should be avoided in favor of class parameters as
-#   of Puppet 2.6.)
-#
-# === Examples
-#
-#  class { puppet-redbox:
-#    servers => [ 'pool.ntp.org', 'ntp.local.company.com' ],
-#  }
-#
+# Puppet Centos installation of redbox and mint, including harvester,apache proxy and system_config
+# population.
 # === Authors
 #
 # Matt Mulholland <matt@redboxresearchdata.com.au>
 # <a href="https://github.com/shilob">Shilo Banihit</a>
 # === Copyright
 #
-# Copyright 2013 Your name here, unless otherwise noted.
+# Copyright (C) 2013 Queensland Cyber Infrastructure Foundation (http://www.qcif.edu.au/)
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License along
+#   with this program; if not, write to the Free Software Foundation, Inc.,
+#   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 class puppet-redbox (
   $redbox_user              = hiera(redbox_user, 'redbox'),
