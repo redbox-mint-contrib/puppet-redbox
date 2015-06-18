@@ -14,7 +14,19 @@ define puppet-redbox::add_redbox_package (
   $redbox_system = $packages[system]
 
   puppet_common::add_directory { $packages[install_directory]: owner => $owner, before => Package[$redbox_package] }
-  package { $redbox_package: }
+ if $redbox_system == 'mint' {
+    # check if there are dependencies/chains
+    if ($packages[pre_install]) {
+      package {$packages[pre_install]:
+      }
+    }
+    package{$redbox_package:}
+    if ($packages[post_install]) {
+      package {$packages[post_install]:}
+    }
+  } else {
+    package { $redbox_package: }
+  }
 
   if ($redbox_system == 'redbox') {
     puppet-redbox::update_system_config { [
