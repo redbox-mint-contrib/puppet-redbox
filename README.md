@@ -1,4 +1,6 @@
 #puppet-redbox using puppet : serverless
+*Deprecated: This will be phased out, once all vms using it have been upgraded to newest module. Follow https://github.com/redbox-mint-contrib/puppet_redbox, which follows puppet standard for owner-module, and contains tests, as well as latest additions for supporting cloud and institutional builds.*
+
 This module deploys, installs and runs redbox.
 
 ## Pre-requisites
@@ -16,15 +18,9 @@ wget https://raw.githubusercontent.com/redbox-mint-contrib/puppet-redbox/master/
 sudo install.sh
 ```
 ## Optional Features
-
 1. Follow puppet-hiera-redbox's README.md if installing bitbucket module puppet-hiera-redbox
 
-## Manual configuration needed for:
-* export apiKey in home/system-config.json
-
 ##TODO:
-* set up using r10k/heat
-* improve way redbox rpm build, yum and puppet integrate
 
 License
 -------
